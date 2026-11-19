@@ -1,87 +1,42 @@
-# MBLOG Scanner — protótipo v1 (modo simulação)
+# MBLOG Scanner v3.0 — aplicativo com abas
 
-O projeto contém uma **PWA gratuita** para experimentar o aplicativo no Android e
-um decodificador **Python de exemplo** para mensagens DM1/J1939. **Não existe
-conexão com caminhões, leitura real, transmissão CAN ou limpeza de erros nesta versão.**
-Todos os dados que aparecem no painel são gerados ficticiamente no próprio navegador.
+**Aplicativo web progressivo (PWA)** para gestão de atendimentos da frota e geração de PDF localmente. Sem custos de hospedagem pelo GitHub Pages.
 
-## Começar no computador
+## O que está disponível
 
-1. Instale o Python 3.10+ (ou use outro servidor HTTP estático).
-2. Abra um terminal na pasta `MBLOG_Scanner_v1` e execute:
+- Abas: **Visão geral**, **Leituras**, **Sistemas**, **Falhas**, **Histórico**, **Relatórios** e **Configurações**.
+- Cadastro privado de até 200 veículos importado por arquivo `.json` no próprio celular.
+- Relatórios técnicos A4 em PDF com placa, modelo, data, técnico, atendimento, observações e indicação da origem dos dados.
+- Histórico de atendimentos salvo no navegador do aparelho e reexportação de cada relatório em PDF.
+- Demonstração opcional em Configurações, com números e códigos de falha **explicitamente fictícios**.
+- Interface adaptada ao Android, instalável pelo Chrome quando a PWA estiver publicada via HTTPS.
 
-   ```bash
-   python -m http.server 8000
-   ```
+## O que NÃO está disponível nesta versão
 
-3. Acesse `http://localhost:8000` no navegador.
-4. Clique em **Iniciar simulação** e **Simular falha**.
+A **leitura eletrônica real**, incluindo falhas SPN/FMI, motor, ABS e outros módulos, **não funciona ainda**. O aplicativo não se conecta à rede CAN nem comunica com adaptadores Bluetooth ou Wi-Fi. Ainda é necessário selecionar e validar interface elétrica, pinagem, protocolos e integração. Quando não há leitura real, indicadores aparecem com `—` e os PDFs são identificados como **REGISTRO MANUAL / SEM LEITURA ELETRÔNICA**. Não use o relatório para atestar ausência de defeitos.
 
-## Abrir no Android sem notebook durante a demonstração
+## Atualizar o GitHub Pages
 
-Publique **apenas os arquivos do projeto público, sem as placas reais**, no
-GitHub Pages: repositório → Settings → Pages → Deploy from a branch → main → / (root).
-Abra o endereço HTTPS pelo navegador Chrome do Android; no menu, use
-**Adicionar à tela inicial / Instalar aplicativo** se essa opção estiver disponível.
-O aplicativo simula dados no próprio Android, inclusive offline após o primeiro acesso,
-quando o navegador permitir o cache da PWA.
+1. Extraia o ZIP e abra a pasta `MBLOG_Scanner_v3`.
+2. Envie **todos os arquivos desta pasta**, preservando `icons/` e `gateway/`, para a **raiz** do mesmo repositório no GitHub (o `index.html` deve estar na raiz). Substitua arquivos da versão antiga.
+3. Aguarde a publicação em **Settings → Pages** (branch `main`, diretório `/(root)`).
+4. No Chrome do celular, abra a URL do GitHub Pages, atualize a página e, se necessário, feche e reabra o aplicativo para renovar o cache.
+5. Para instalar/atualizar atalho PWA, use menu do Chrome → **Instalar aplicativo** ou **Adicionar à tela inicial**.
 
-> O GitHub Pages hospeda arquivos estáticos, mas **não executa Python**. Ele não
-> oferece leitura CAN/OBD pela tomada do caminhão.
+## Importar os veículos no celular
 
-## Cadastrar os veículos reais
+- Baixe separadamente o arquivo `cadastro_privado_MBLOG.json` no Android (pasta Downloads).
+- Na versão 3, abra **Configurações (ícone da engrenagem no alto à direita) → Minha frota → Importar cadastro**.
+- Escolha o JSON salvo no dispositivo. O aplicativo exibe os nove veículos no seletor superior.
+- **Nunca envie o JSON privado para um repositório público, issue ou GitHub Pages.** O dado fica no armazenamento local do navegador e não é sincronizado entre celulares.
 
-O projeto público inclui somente placas fictícias `DEMO-01` a `DEMO-09`.
-No app, clique em **Importar cadastro privado (.json)** e selecione o arquivo
-`cadastro_privado_MBLOG.json` fornecido separadamente. O arquivo real será lido
-localmente no navegador e salvo no armazenamento do dispositivo (`localStorage`).
-**Não faça commit desse arquivo em repositório público** nem compartilhe o
-endereço da página contendo informações pessoais, se houver.
+## Relatórios e segurança
 
-Formato aceito:
+- Em **Relatórios**, digite nome do responsável, tipo de atendimento e observações, depois use **Exportar PDF**.
+- Para preservar atendimentos no histórico local, toque em **Salvar atendimento**.
+- Faça backup dos PDFs; limpar dados do navegador pode apagar o cadastro e o histórico.
+- A demonstração (Configurações) é separada das funções normais: qualquer valor eletrônico gerado por ela aparece claramente identificado como fictício, inclusive no PDF.
 
-```json
-{"vehicles": [{"id":"MB01", "plate":"DEMO-01", "model":"Volkswagen 17.190 CRM", "year":2014}]}
-```
+## Tecnologias
 
-O histórico pode ser exportado em CSV. O navegador pode apagar dados locais ao
-limpar cache, reinstalar o app ou no modo anônimo; faça backup dos arquivos CSV.
-
-## Testar o decodificador Python (offline)
-
-Este exemplo trata o corpo de uma mensagem **J1939 DM1 (PGN 65226)**.
-A entrada é uma string hexadecimal didática; ela **não veio de um veículo**:
-
-```bash
-python gateway/j1939.py "00 00 6E 00 03 01"
-python -m unittest discover -s gateway -v
-```
-
-O exemplo exibe o código **SPN 110, FMI 3, ocorrência 1**. O parser não
-reconstitui pacotes de transporte, não identifica módulos e não garante
-compatibilidade com mensagens proprietárias.
-
-## Plano para chegar ao diagnóstico REAL pelo celular
-
-1. Confirmar no manual elétrico ou com oficina qual a pinagem, tensão e protocolo
-   de cada veículo: VW, Mercedes e Ford. Fotos externas do conector não bastam.
-2. Comprar/usar **interface automotiva certificada e compatível com 24 V**, que
-   tenha suporte **documentado** a CAN/J1939 e conectividade Android por Wi-Fi,
-   Bluetooth ou USB. Não assumir que todo ELM327 serve para caminhões.
-3. Registrar primeiro leituras **passivas**, sem enviar comandos; validar RPM,
-   temperatura e mensagens DM1 com um scanner profissional de referência.
-4. Implementar uma camada específica de comunicação. Para rodar diretamente
-   no celular, preferir um app Android com suporte nativo ao adaptador, ou
-   um gateway sem fio que hospede a interface localmente. Um PWA hospedado
-   via GitHub Pages não deve tentar contornar bloqueios de rede/segurança
-   do navegador.
-5. Só liberar funções adicionais após validação específica por marca e módulo.
-
-**Nunca ligar uma interface desconhecida apenas porque o encaixe combina.**
-Não transmitir comandos de atuação, calibração, apagamento de falhas ou escrita de ECU
-na fase experimental. Usar apenas em veículos autorizados e estacionados.
-
-## Licença
-
-Código demonstrativo entregue para uso e adaptação. O projeto não é ferramenta
-profissional de diagnóstico e não deve orientar decisões de segurança veicular.
+HTML, CSS e JavaScript local. PDF escrito no navegador sem CDNs nem serviços externos. `gateway/` contém apenas utilitários Python J1939 exploratórios, sem interface real configurada.
