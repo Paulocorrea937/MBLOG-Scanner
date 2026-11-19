@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b2340">
+  <meta name="description" content="MBLOG Scanner: protótipo de diagnóstico de caminhões em modo simulado.">
+  <title>MBLOG Scanner • Demonstração</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <div class="shell">
+    <header class="masthead">
+      <div class="brand"><div class="brandmark">M<span>B</span></div><div><div class="brandtitle">MBLOG <span>Scanner</span></div><div class="brandsub">Diagnóstico de veículos pesados</div></div></div>
+      <div class="mode-tag">● MODO SIMULAÇÃO</div>
+    </header>
+    <div class="notice" role="status">⚠️ <strong>Protótipo:</strong> todas as leituras e falhas desta versão são fictícias. Nenhum caminhão está conectado.</div>
+    <main>
+      <section class="hero">
+        <div><div class="eyebrow">PAINEL DE DIAGNÓSTICO</div><h1>Controle da frota em um só lugar</h1><p>Selecione um caminhão, simule sensores e registre diagnósticos. A conexão real será habilitada após a validação da interface.</p></div>
+        <div class="hero-icon" aria-hidden="true">🚚</div>
+      </section>
+      <div class="layout">
+        <aside class="panel fleet-panel">
+          <div class="panel-top"><h2>Frota MBLOG</h2><span id="fleet-count" class="pill">9 veículos</span></div>
+          <label for="vehicle-select" class="small-label">Selecionar caminhão</label>
+          <select id="vehicle-select" class="field"></select>
+          <div id="vehicle-card" class="vehicle-card"></div>
+          <div class="divider"></div>
+          <div class="small-label">Situação do scanner</div>
+          <div class="conn-line"><span class="status-dot muted"></span><strong>Sem interface física conectada</strong></div>
+          <p class="micro">Um adaptador compatível, com pinagem verificada, será necessário para obter dados reais.</p>
+          <button id="import-button" class="btn outline" type="button">Importar cadastro privado (.json)</button>
+          <input id="import-file" type="file" accept=".json,application/json" hidden>
+          <button id="restore-button" class="btn text-btn" type="button">Restaurar frota de demonstração</button>
+        </aside>
+        <section class="workspace">
+          <div class="statsline"><div><h2>Leitura em tempo real</h2><div class="subtext">Valores de exemplo, gerados no próprio aplicativo</div></div><span id="reading-state" class="pill inactive">Simulador parado</span></div>
+          <div class="metrics">
+            <article class="metric"><div class="metric-label">⚙️ Rotação do motor</div><div class="metric-number"><span id="rpm">—</span><small>rpm</small></div><div class="metric-foot">Faixa ilustrativa: 600–2.300 rpm</div></article>
+            <article class="metric"><div class="metric-label">🌡️ Temperatura do motor</div><div class="metric-number"><span id="temp">—</span><small>°C</small></div><div class="metric-foot">Leitura simulada</div></article>
+            <article class="metric"><div class="metric-label">🔋 Tensão da bateria</div><div class="metric-number"><span id="voltage">—</span><small>V</small></div><div class="metric-foot">Referência fictícia de 24 V</div></article>
+            <article class="metric"><div class="metric-label">⛽ Combustível</div><div class="metric-number"><span id="fuel">—</span><small>%</small></div><div class="progress"><div id="fuel-fill"></div></div></article>
+            <article class="metric"><div class="metric-label">🛣️ Velocidade</div><div class="metric-number"><span id="speed">—</span><small>km/h</small></div><div class="metric-foot">Veículo ficticiamente parado</div></article>
+            <article class="metric"><div class="metric-label">📡 Protocolo</div><div class="metric-number small">J1939 <small>(exemplo)</small></div><div class="metric-foot">Não identificado no veículo real</div></article>
+          </div>
+          <div class="actions"><button id="start-button" class="btn primary" type="button">▶ Iniciar simulação</button><button id="fault-button" class="btn secondary" type="button">⚠️ Simular falha</button><button id="save-button" class="btn outline" type="button">💾 Registrar sessão</button></div>
+          <div class="panel faults"><div class="panel-top"><h2>Códigos de falha (DTC)</h2><span id="fault-count" class="pill">Aguardando</span></div><div id="fault-list" class="fault-list"><div class="empty">Inicie a simulação para exibir falhas de exemplo.</div></div></div>
+          <div class="panel history"><div class="panel-top"><h2>Histórico local</h2><button id="export-button" class="btn tiny outline" type="button">Exportar CSV</button></div><p class="micro">As sessões de demonstração ficam salvas somente neste dispositivo.</p><div id="history-list"></div></div>
+        </section>
+      </div>
+      <section class="bottom-info"><div><strong>Como será a leitura real?</strong><p>Tomada do caminhão → interface CAN/J1939 compatível → aplicativo Android. Exige validação elétrica e do protocolo por modelo.</p></div><div><strong>Versão atual</strong><p>Protótipo grátis, instalável como app pelo navegador compatível. Código preparado para GitHub Pages.</p></div></section>
+    </main>
+    <footer>MBLOG Scanner • Protótipo v1.0 • Dados simulados • Não usar para decisões de manutenção</footer>
+  </div>
+</body>
+</html>
